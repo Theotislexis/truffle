@@ -63,11 +63,22 @@ const command = getCommand({
   options: {},
   noAliases: false
 });
-const options = prepareOptions({
-  command,
-  inputStrings,
-  options: {}
-});
+const options = (function () {
+  //check if command returned null
+  if (command !== null) {
+    return prepareOptions({
+      command,
+      inputStrings,
+      options: {}
+    });
+  } else {
+    let err = new Error(
+      `\`truffle ${inputStrings}\` is not a valid truffle command. Please see \`truffle help\` for available commands.`
+    );
+    console.error(err.message);
+    process.exit(1);
+  }
+})();
 
 runCommand(command, options)
   .then(returnStatus => {
